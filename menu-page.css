@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #333;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: fixed;
+  top: 60%;
+  transform: translateY(-40%);
+  gap: 2.5em;
+  z-index: 1;
+  margin-left: 2em;
+}
+
+.menu-picture {
+  width: 25em;
+  height: 25em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5em;
+}
+
+.menu-picture img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.game-name {
+  display: flex;
+  align-items: flex-start;
+  position: fixed;
+  font-size: 60px;
+  margin-left: 1em;
+  top: 30%;
+  transform: translateY(-55%);
+}
+
+.game-container {
+  display: flex;
+  flex-direction: row-reverse; /* Reversed direction to align the image on the right */
+  justify-content: space-between;
+  align-items: center;
+  width: 960px;
+  height: 560px;
+  border: 5px solid rgb(45, 117, 211);
+  position: relative;
+  overflow: hidden;
+}
+
+.play-text {
+  color: #999;
+  cursor: pointer;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 5px 15px; /* Add padding around the text */
+  margin: 0 5px;
+  transition: background-color 0.3s;
+}
+
+.play-text:hover {
+  background-color: rgb(255, 255, 255, 0.7);
+}
+
+#cube {
+  width: 64px;
+  height: 64px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#cube img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hidden {
+  display: none;
+}
+
+#background {
+  background-color: rgb(58, 233, 95);
+}
