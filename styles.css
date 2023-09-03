@@ -20,16 +20,16 @@ body {
 }
 
 #game-container {
-  width: 60em;
-  height: 35em;
+  width: 960px;  /* Changed from 60em to 960px */
+  height: 560px;  /* Changed from 35em to 560px */
   border: 5px solid black;
   position: relative;
   overflow: hidden;
 }
 
 #cube {
-  width: 3em;
-  height: 3em;
+  width: 50px;  /* Changed from 3em to 50px */
+  height: 50px;  /* Changed from 3em to 50px */
   background-color: blue;
   position: absolute;
   left: 0;
