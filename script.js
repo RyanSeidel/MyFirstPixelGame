@@ -1,81 +1,111 @@
 let gameStarted = false;  // Flag to indicate whether the game has started
-
-// Variable initialization for gravity and jumping
 let gravity = 1;
 let velocityY = 0;
 let jumping = false;
+let velocityX = 0;
+let keyState = {};
+
+document.addEventListener("keydown", function(event) {
+  keyState[event.key] = true;
+  moveCube();
+});
+
+document.addEventListener("keyup", function(event) {
+  keyState[event.key] = false;
+});
 
 document.addEventListener("DOMContentLoaded", function() {
   const playText = document.getElementById("play-text");
   const menuContainer = document.getElementById("menu-container");
 
-  // Game loop for gravity and other constant updates
   function gameLoop() {
     if (gameStarted) {
-      // Apply gravity if not jumping
       if (!jumping) {
         velocityY += gravity;
+        velocityX *= 0.7;
+
       } else {
-        velocityY = -10;  // Upward velocity for jump
-        jumping = false;  // Reset jumping state
+        velocityY = -10;
+        jumping = false;
+        changeCubeImage("animations/Sprite-jump256.gif");
+
       }
 
-      cubeTop += velocityY;  // Apply vertical velocity
+      cubeTop += velocityY;
+      cubeLeft += velocityX;
 
-      // Ground collision
-      if (cubeTop + 50 >= 560) {
-        cubeTop = 560 - 50;
+      if (cubeLeft < 0) {
+        cubeLeft = 0;
+        velocityX = 0;
+      } else if (cubeLeft + 50 > 960) {
+        cubeLeft = 960 - 50;
+        velocityX = 0;
+      }
+
+      const cubeHeight = parseInt(window.getComputedStyle(cubeImage).height, 10);
+
+      if (cubeTop + cubeHeight >= 560) {
+        cubeTop = 560 - cubeHeight;
         velocityY = 0;
+        velocityX = 0;
       }
 
       cube.style.top = cubeTop + "px";
+      cube.style.left = cubeLeft + "px";
     }
     requestAnimationFrame(gameLoop);
   }
-  
+
   playText.addEventListener("click", function() {
     menuContainer.classList.add("hidden");
-    gameStarted = true;  // Set the flag to true when "Play" is clicked
-    requestAnimationFrame(gameLoop); // Start the game loop
-  });
-
-  document.addEventListener("keydown", function(event) {
-    if (gameStarted) {  // Only move the cube if the game has started
-      moveCube(event);
-    }
+    gameStarted = true;
+    requestAnimationFrame(gameLoop);
   });
 });
 
 let cube = document.getElementById("cube");
+let cubeImage = cube.querySelector("img");
 let style = window.getComputedStyle(cube);
 let cubeLeft = parseInt(style.left, 10);
 let cubeTop = parseInt(style.top, 10);
 
-function moveCube(event) {
-  const containerWidth = 960;
-  const containerHeight = 560;
-  const cubeSize = 50;
+function changeCubeImage(newSrc) {
+  cubeImage.src = newSrc;
 
-  switch (event.key) {
-    case 'a':
-      if (cubeLeft - 10 >= 0) {
-        cubeLeft -= 10;
-      }
-      break;
-    case 'w':
-      if (velocityY === 0) {  // Can jump only if not already in air
-        jumping = true;
-      }
-      break;
-    case 'd':
-      if (cubeLeft + cubeSize + 10 <= containerWidth) {
-        cubeLeft += 10;
-      }
-      break;
-    case 's':
-      // Do nothing as gravity will pull the cube down
-      break;
+  if (newSrc === "animations/Sprite-jump256.gif") {
+    cubeImage.style.width = '64px';
+    cubeImage.style.height = '64px';
+  } else {
+    cubeImage.style.width = '';
+    cubeImage.style.height = '';
   }
 
-  cube.style.left = cubeLeft + "px";
+  cube.offsetHeight;
+
+  const newCubeHeight = parseInt(window.getComputedStyle(cubeImage).height, 10);
+  cubeTop = 560 - newCubeHeight;
+}
+
+function moveCube() {
+  if (gameStarted) {
+    if (velocityY === 0) {
+      if (keyState['a']) {
+        cubeLeft -= 10;
+      }
+      if (keyState['d']) {
+        cubeLeft += 10;
+      }
+    }
+    if (keyState['w'] && velocityY === 0) {
+      jumping = true;
+      if (keyState['d']) {
+        velocityX = 5;
+      } else if (keyState['a']) {
+        velocityX = -5;
+      } else {
+        velocityX = 0;
+      }
+    }
+    cube.style.left = cubeLeft + "px";
+  }
 }
