@@ -1,4 +1,4 @@
-import { checkPlatformCollision } from './platforms.js'
+import { platform } from './platforms.js';
 
 const slime = document.getElementById("slime");
 const gameContainer = document.querySelector(".game-map1");
@@ -48,6 +48,18 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+function isCollidingWithPlatform() {
+  const slimeBottom = posY + slime.offsetHeight;
+  const slimeRight = posX + slime.offsetWidth;
+
+  return (
+      posX < platform.x + platform.width &&
+      slimeRight > platform.x &&
+      slimeBottom >= platform.y &&
+      posY <= platform.y + platform.height
+  );
+}
+
 function updateSlimePosition() {
   
   // Update horizontal position
@@ -57,6 +69,12 @@ function updateSlimePosition() {
   velocityY += gravity;
   posY += velocityY;
 
+  // Check collision with the platform
+  if (isCollidingWithPlatform()) {
+    posY = platform.y - slime.offsetHeight; // Adjust the slime's position to be just above the platform
+    velocityY = 0; // Reset vertical velocity when landing on the platform
+  }
+
   // Constrain the horizontal position within the container's bounds
   if (posX < 0) {
     posX = 0;
@@ -64,19 +82,15 @@ function updateSlimePosition() {
     posX = gameContainer.clientWidth - slime.offsetWidth;
   }
 
-  // Call the collision check function (from platforms.js)
-  checkPlatformCollision();
-
   // Constrain the vertical position within the container's bounds
   if (posY + slime.offsetHeight > gameContainer.clientHeight) {
     posY = gameContainer.clientHeight - slime.offsetHeight;
-    velocityY = 0; // Reset vertical velocity when landing
+    velocityY = 0; // Reset vertical velocity when landing on the ground
   }
 
-  // Apply positions to the image element (merged horizontal and vertical, only needs one transform)
+  // Apply position to the image element
   slime.style.transform = `translate(${posX}px, ${posY}px)`;
 
-  // Continue updating
   requestAnimationFrame(updateSlimePosition);
 }
 

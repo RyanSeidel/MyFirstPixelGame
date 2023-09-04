@@ -98,7 +98,11 @@ body {
 
 #background {
   background-color: rgb(58, 233, 95);
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 
 .platform {
   position: absolute;
