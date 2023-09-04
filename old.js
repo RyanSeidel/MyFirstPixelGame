@@ -53,9 +53,6 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
   
-  
-  
-
   playText.addEventListener("click", function() {
     menuContainer.classList.add("hidden");
     gameStarted = true;
