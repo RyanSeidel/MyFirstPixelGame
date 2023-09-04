@@ -1,3 +1,5 @@
+import { checkPlatformCollision } from './platforms.js'
+
 const slime = document.getElementById("slime");
 const gameContainer = document.querySelector(".game-map1");
 
@@ -20,7 +22,10 @@ document.addEventListener("keydown", (event) => {
   } else if (event.key === "d" || event.key === "ArrowRight") {
     // Move right when "D" key or Arrow Right key is pressed
     velocityX = moveSpeed;
-  } else if ((event.key === "w" || event.key === "ArrowUp") && posY + slime.offsetHeight === gameContainer.clientHeight && !isJumping) {
+  } else if ((event.key === "w" || event.key === "ArrowUp") && 
+  (posY + slime.offsetHeight === gameContainer.clientHeight || 
+   posY + slime.offsetHeight === platform.y) && 
+  !isJumping) {
     // Jump when "W" key or Arrow Up key is pressed and slime is on the ground and not already jumping
     isJumping = true;
     velocityY = jumpStrength;
@@ -44,11 +49,9 @@ document.addEventListener("keyup", (event) => {
 });
 
 function updateSlimePosition() {
+  
   // Update horizontal position
   posX += velocityX;
-
-  // Apply horizontal position to the image element
-  slime.style.transform = `translate(${posX}px, ${posY}px)`;
 
   // Apply gravity to vertical position
   velocityY += gravity;
@@ -61,16 +64,21 @@ function updateSlimePosition() {
     posX = gameContainer.clientWidth - slime.offsetWidth;
   }
 
+  // Call the collision check function (from platforms.js)
+  checkPlatformCollision();
+
   // Constrain the vertical position within the container's bounds
   if (posY + slime.offsetHeight > gameContainer.clientHeight) {
     posY = gameContainer.clientHeight - slime.offsetHeight;
     velocityY = 0; // Reset vertical velocity when landing
   }
 
-  // Apply vertical position to the image element
+  // Apply positions to the image element (merged horizontal and vertical, only needs one transform)
   slime.style.transform = `translate(${posX}px, ${posY}px)`;
 
+  // Continue updating
   requestAnimationFrame(updateSlimePosition);
 }
+
 
 updateSlimePosition();
